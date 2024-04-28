@@ -10,6 +10,8 @@ from pathlib import Path
 
 from openai import AzureOpenAI
 
+# "st.session_state object:", st.session_state      # for testing
+
 # ------ USER AUTHENTICATION ----- #
 # Import the YAML file
 file_path = Path(__file__).parent / "user_credentials.yaml"
@@ -25,19 +27,20 @@ authenticator = stauth.Authenticate(
     config['preauthorized']
 )
 
-name, authentication_status, username = authenticator.login()
+# retrieve the name, authentication status, and username from Streamlit's session state using st.session_state["name"], st.session_state["authentication_status"], and st.session_state["username"]
+authenticator.login()
 
-if authentication_status == False:
+if st.session_state["authentication_status"] == False:
     st.error("Username/password is incorrect")
 
-if authentication_status == None:
+if st.session_state["authentication_status"] == None:
     st.warning("Please enter your username and password")
 
-if authentication_status: # USER AUTHENTICATION is success
+if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
 
 # ------ MAIN PAGE ----- #
-    "st.session_state object:", st.session_state
 
+    st.subheader("Welcome, "+st.session_state["name"])
     if 'mode' not in st.session_state:
         st.session_state['mode'] = 'CHAT'
 

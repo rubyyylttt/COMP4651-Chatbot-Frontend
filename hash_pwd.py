@@ -18,7 +18,8 @@ with file_path.open("rb") as file:
 
 # Iterate over the usernames and hash their passwords
 for username, user_data in data['credentials']['usernames'].items():
-    user_data['password'] = Hasher(user_data['password']).generate()
+    print(Hasher._hash(user_data['password']))
+    user_data['password'] = Hasher._hash(user_data['password'])
 
 
 with file_path.open("w") as file:
