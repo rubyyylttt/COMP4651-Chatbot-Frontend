@@ -5,31 +5,31 @@ import streamlit as st
 from openai import AzureOpenAI
 
 "st.session_state object:", st.session_state
+
 if 'mode' not in st.session_state:
     st.session_state['mode'] = 'CHAT'
 
-def my_function(val):
-    st.write("The value is:", val)
-    st.write("The mode is:", mode)
-    if isinstance(val,str):
-        mode = val
-    else:
-        mode = 'ERROR'
-    st.write("2The value is:", val)
-    st.write("2The mode is:", mode)
-
 with st.sidebar:
-    st.button('Chat', on_click={my_function('CHAT')})
-    st.button('Translate', on_click={my_function('TRANSLATE')})
-    st.button('Draw', on_click={my_function('DRAW')})
-    st.button('Music', on_click={my_function('MUSIC')})
+    chat_bu = st.button('Chat')
+    translate_bu = st.button('Translate')
+    draw_bu = st.button('Draw')
+    music_bu = st.button('Music')
+
+    if chat_bu:
+        st.session_state['mode'] = 'CHAT'
+    if translate_bu:
+        st.session_state['mode'] = 'TRANSLATE'
+    if draw_bu:
+        st.session_state['mode'] = 'DRAW'
+    if music_bu:
+        st.session_state['mode'] = 'MUSIC'
 
     openai_api_key = st.text_input("Azure OpenAI API Key", key="chatbot_api_key", type="password")
     "[Get an Azure OpenAI API key](https://itsc.hkust.edu.hk/services/it-infrastructure/azure-openai-api-service)"
 
 model_name = "gpt-35-turbo"
 
-if mode == 'CHAT':
+if st.session_state['mode'] == 'CHAT':
     st.title("💬 Chatbot")
 
 
@@ -65,11 +65,11 @@ if mode == 'CHAT':
         st.session_state.messages.append({"role": "assistant", "content": msg})
         st.chat_message("assistant").write(msg)
 
-elif mode == 'TRANSLATE':
+elif st.session_state['mode'] == 'TRANSLATE':
     st.title("💬 Translate")
-elif mode == 'DRAW':
+elif st.session_state['mode'] == 'DRAW':
     st.title("💬 Draw")
-elif mode == 'MUSIC':
+elif st.session_state['mode'] == 'MUSIC':
     st.title("💬 Music")
-elif mode == 'ERROR':
-    print('error')
+else:
+    st.title("ERROR")
