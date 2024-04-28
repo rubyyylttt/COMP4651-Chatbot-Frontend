@@ -1,6 +1,4 @@
-# ref: https://www.youtube.com/watch?v=JoFGrSRj4X4
-# build helper file for user authentication
-
+# helper file for hashing pwds in user_credentials.yaml
 
 import yaml
 from yaml.loader import SafeLoader
