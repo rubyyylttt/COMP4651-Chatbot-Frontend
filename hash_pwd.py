@@ -22,3 +22,4 @@ for username, user_data in data['credentials']['usernames'].items():
 
 with file_path.open("w") as file:
     yaml.dump(data, file, default_flow_style=False)
+
