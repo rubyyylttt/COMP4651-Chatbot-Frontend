@@ -17,8 +17,8 @@ from io import StringIO
 apis = {
     "CHAT": "https://httpbin.org/get",# "https://v1/chat",
     "TRANSLATE": "https://httpbin.org/get",# "https://v1/translate",
-    "DRAW":  "https://httpbin.org/get",# "https://v1/media",
-    "MUSIC": "https://httpbin.org/get",#  "https://v1/music",
+    # "DRAW":  "https://httpbin.org/get",# "https://v1/media",
+    # "MUSIC": "https://httpbin.org/get",#  "https://v1/music",
 }
 
 # ------ USER AUTHENTICATION ----- #
@@ -74,10 +74,21 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
         # generate session buttons
         st.title("Chatrooms")
 
-        newchat = st.button('➕ Create new chat', use_container_width=100)
+        mode = st.radio("Select mode for new chat session", ["chat", "translate"])
+        newchat = st.button('➕ Create', use_container_width=50)
+
 
         if newchat:
+            if mode == "chat":
+                st.session_state["MODE"] = "chat"
+            elif mode == "translate":
+                st.session_state["MODE"] = "translate"
+
+            st.write(mode)
+            # connect to backend: generate session id
+            
             st.session_state['display'] = 'HOME'
+        
         
         for session_id, session_data in sessions['sessions'].items():
             title = 'Default'
@@ -85,10 +96,10 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
                 title = '💬 ' + session_data['title']
             if session_data['mode'] == 'TRANSLATE':
                 title = '🗣️ ' + session_data['title']
-            if session_data['mode'] == 'DRAW':
-                title = '🎨 ' + session_data['title']
-            if session_data['mode'] == 'MUSIC':
-                title = '🎵 ' + session_data['title']
+            # if session_data['mode'] == 'DRAW':
+            #     title = '🎨 ' + session_data['title']
+            # if session_data['mode'] == 'MUSIC':
+            #     title = '🎵 ' + session_data['title']
 
             st.button(title, use_container_width=100, on_click=openSession, args=(session_id,))
 
@@ -99,13 +110,24 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
     model_name = "gpt-35-turbo"
     if st.session_state['display'] == 'HOME':
         st.subheader("Welcome, "+st.session_state["name"])
-        
+        Chat, Translate = st.tabs(["💬 Chat", "🗣️ Translate"])
         st.caption("Start a new chat below")
+        if "messages" not in st.session_state:
+            st.session_state["messages"] = [{"role":"assistant", "content": {"type":"text", "text": "welcome!!"}}]
 
-        Chat, Translate, Draw, Music = st.tabs(["💬 Chat", "🗣️ Translate", "🎨 Draw", "🎵 Music"])
+        for msg in st.session_state.messages:
+            st.chat_message(msg['role']).write(msg["content"]["text"])
+
+        if user_resp := st.chat_input("say something"):
+            # if not open_api_key:
+            #     st.info("Please add your Azure OpenAI API key to continue.")
+            #     st.stop()
+            st.session_state['messages'].append({"role": "user", "content":{"type":"text" ,"text":user_resp }})
+            st.chat_message("user").write(user_resp)
 
         with Chat:
             model_name = "gpt-35-turbo"
+           
 
         with Translate:
             model_name = "gpt-35-turbo"
@@ -132,35 +154,6 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
                 st.write(string_data)
 
 
-        with Draw:
-            model_name = "gpt-35-turbo"
-            # --------- upload media -------------
-            uploaded_files = st.file_uploader(
-                label=":frame_with_picture: upload image(s)", 
-                type=['png', 'jpg'],
-                accept_multiple_files=True
-            )
-
-            if uploaded_files is not None:
-                for uploaded_file in uploaded_files:
-                    bytes_data = uploaded_file.read()
-                    st.write("filename:", uploaded_file.name)
-                    st.write(bytes_data)
-
-        with Music:
-            model_name = "gpt-35-turbo"
-            # --------- upload media -------------
-            uploaded_files = st.file_uploader(
-                label="🎶 upload mp3", 
-                type=['mp3', 'mp4'],
-                accept_multiple_files=True
-            )
-            if uploaded_files is not None:
-                for uploaded_file in uploaded_files:
-                    bytes_data = uploaded_file.read()
-                    st.write("filename:", uploaded_file.name)
-                    st.write(bytes_data)
-
     # when a user click a session button in the sidebar or create a new chatroom in the homepage
     elif st.session_state['display'] == 'CHATROOM':
         s_title = 'Default'
@@ -171,11 +164,7 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
             s_title = '💬 ' + session_items[sid]['title']
         if session_items[sid]['mode'] == 'TRANSLATE':
             s_title = '🗣️ ' + session_items[sid]['title']
-        if session_items[sid]['mode'] == 'DRAW':
-            s_title = '🎨 ' + session_items[sid]['title']
-        if session_items[sid]['mode'] == 'MUSIC':
-            s_title = '🎵 ' + session_items[sid]['title']
-
+    
         if session_items[sid]['messages'] is not None:
             st.session_state["messages"] =  session_items[sid]['messages']
         else:
