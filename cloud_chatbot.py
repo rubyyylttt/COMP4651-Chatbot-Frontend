@@ -173,8 +173,7 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
             s_title = '🗣️ ' + session_items[sid]['title']
         if session_items[sid]['mode'] == 'DRAW':
             s_title = '🎨 ' + session_items[sid]['title']
-        if session_items[sid]['mode'] == 'MUSIC':
-            s_title = '🎵 ' + session_items[sid]['title']
+       
 
         if session_items[sid]['messages'] is not None:
             st.session_state["messages"] =  session_items[sid]['messages']
