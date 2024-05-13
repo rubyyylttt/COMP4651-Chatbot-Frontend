@@ -102,18 +102,6 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
 
         mode = st.radio("Select mode for new chat session", ["chat", "translate"])
         newchat = st.button('➕ Create', use_container_width=100, on_click=createSession, args=(user_id, mode,))
-
-
-        # if newchat:
-        #     if mode == "chat":
-        #         st.session_state["mode"] = "chat"
-        #     elif mode == "translate":
-        #         st.session_state["mode"] = "translate"
-
-        #     st.write(mode)
-        #     # connect to backend: generate new session id
-
-        #     st.session_state['display'] = 'HOME'
         
         
         for session_id in sessions['sessionIds']:
