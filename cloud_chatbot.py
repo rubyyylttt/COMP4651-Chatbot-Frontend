@@ -119,8 +119,8 @@ if st.session_state["authentication_status"]: # USER AUTHENTICATION is success
         for session_id in sessions['sessionIds']:
             st.button(session_id, use_container_width=100, on_click=openSession, args=(session_id,))
 
-        openai_api_key = st.text_input("Azure OpenAI API Key", key="chatbot_api_key", type="password")
-        "[Get an Azure OpenAI API key](https://itsc.hkust.edu.hk/services/it-infrastructure/azure-openai-api-service)"
+        # openai_api_key = st.text_input("Azure OpenAI API Key", key="chatbot_api_key", type="password")
+        # "[Get an Azure OpenAI API key](https://itsc.hkust.edu.hk/services/it-infrastructure/azure-openai-api-service)"
 
 
     model_name = "gpt-35-turbo"
